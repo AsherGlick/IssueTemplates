@@ -1,0 +1,39 @@
+name: Custom Diff
+
+on:
+  pull_request:
+    paths:
+      - '**/*.txt'
+jobs:
+  custom-diff:
+    runs-on: ubuntu-23.04
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Get Filenames
+      run: |
+        for file in $(git diff --name-only ${{ github.base_ref }}...${{ github.head_ref }} | grep '.proto$'); do
+           echo $file >> file_list.txt
+        done
+    - name: Post Comment
+      if: always()
+      uses: action/github-script@v5
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+
+          const issue_number = context.issue.number;
+          const githubToken = process.env.GITHUB_TOKEN;
+          const octokit = github.getOctokit(githubToken);
+
+          await octokit.rest.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: issue_number,
+            body: "Custom Diff"
+            commit_id: context.sha,
+            path: 'myfile.txt',
+            position: 1,
+          });

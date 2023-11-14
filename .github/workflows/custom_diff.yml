@@ -35,17 +35,13 @@ jobs:
           console.log(context.repo.repo);
           console.log(context.repo.owner);
 
-          const octokit = new Octokit({
-            auth: githubToken
-          });
-
-          await octokit.rest.pulls.createReviewComment({
+          await github.rest.pulls.createReviewComment({
             owner: context.repo.owner,
             repo: context.repo.repo,
             pull_number: issue_number,
             body: "Custom Diff",
             commit_id: context.sha,
-            path: '/my_testfile.txt',
+            path: 'my_testfile.txt',
             start_line: 1,
             start_side: "RIGHT",
             line: 2,

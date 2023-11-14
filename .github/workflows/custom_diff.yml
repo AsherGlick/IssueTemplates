@@ -52,6 +52,15 @@ jobs:
           //  pull_number: issue_number,
           //})
 
+          const response = await github.pulls.listFiles({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: issue_number,
+          })
+
+          const diff = response.data.map(file => file.patch).join("\n\n");
+          console.log(diff);
+
           //console.log(files);
           
           await github.rest.pulls.createReviewComment({

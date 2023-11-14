@@ -30,10 +30,10 @@ jobs:
           const githubToken = process.env.GITHUB_TOKEN;
           //const octokit = github.getOctokit(githubToken);
 
-          console.log(context.sha);
-          console.log(issue_number);
-          console.log(context.repo.repo);
-          console.log(context.repo.owner);
+          console.log("Sha:" + context.sha);
+          console.log("Issue Number:" + issue_number);
+          console.log("Repo:" +context.repo.repo);
+          console.log("Owner:"+context.repo.owner);
 
           await github.rest.pulls.createReviewComment({
             owner: context.repo.owner,

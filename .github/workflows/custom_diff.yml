@@ -56,6 +56,6 @@ jobs:
             path: 'my_testfile.txt',
             // start_line: 1,
             // start_side: "RIGHT",
-            line: 2,
+            line: -1,
             side: "RIGHT",
           });

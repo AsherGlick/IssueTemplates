@@ -95,6 +95,6 @@ jobs:
             path: 'my_testfile.txt',
             // start_line: 1,
             // start_side: "RIGHT",
-            line: 36,
-            side: "RIGHT",
+            //line: 36,
+            //side: "RIGHT",
           });

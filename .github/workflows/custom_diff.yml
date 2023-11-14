@@ -23,9 +23,11 @@ jobs:
         git fetch origin +refs/pull/${{ github.event.pull_request.number }}/head:refs/pull/${{ github.event.pull_request.number }}/head
 
     - name: Get PR commit hash
+      id: prcommithash
       run: |
           PR_COMMIT_HASH=$(git log --format="%H" -n 1 refs/pull/${{ github.event.pull_request.number }}/head)
           echo "Latest PR Commit Hash: $PR_COMMIT_HASH"
+          echo "pr_commit_hash="$PR_COMMIT_HASH >> $GITHUB_OUTPUT
 
     - name: Post Comment
       if: always()
@@ -50,7 +52,7 @@ jobs:
             repo: context.repo.repo,
             pull_number: issue_number,
             body: "Custom Diff",
-            commit_id: '${{env.PR_COMMIT_HASH}}',
+            commit_id: '${{ steps.prcommithash.outputs.pr_commit_hash }}',
             path: 'my_testfile.txt',
             // start_line: 1,
             // start_side: "RIGHT",

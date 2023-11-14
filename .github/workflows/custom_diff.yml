@@ -42,8 +42,8 @@ jobs:
             body: "Custom Diff",
             commit_id: context.sha,
             path: 'my_testfile.txt',
-            start_line: 1,
-            start_side: "RIGHT",
+            // start_line: 1,
+            // start_side: "RIGHT",
             line: 2,
             side: "RIGHT",
           });

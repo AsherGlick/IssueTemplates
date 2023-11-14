@@ -86,11 +86,16 @@ jobs:
             "</details>",
           ].join("\n");
           
-          await github.rest.pulls.createReviewComment({
+          await github.rest.pulls.createReview({
             owner: context.repo.owner,
             repo: context.repo.repo,
             pull_number: issue_number,
-            body: comment_body,
+            comments: [
+              {
+                path: "my_testfile.txt",
+                body: comment_body,
+              }
+            ],
             //commit_id: '${{ steps.prcommithash.outputs.pr_commit_hash }}',
             //path: 'my_testfile.txt',
             // start_line: 1,

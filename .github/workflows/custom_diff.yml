@@ -25,19 +25,16 @@ jobs:
           const fs = require('fs');
           const path = require('path');
 
-          console.log(github);
 
           const issue_number = context.issue.number;
           const githubToken = process.env.GITHUB_TOKEN;
           //const octokit = github.getOctokit(githubToken);
 
-          console.log(issue_number);
 
-          await github.rest.issues.createComment({
+          await github.rest.pulls.createReviewComment({
             owner: context.repo.owner,
             repo: context.repo.repo,
             pull_number: issue_number,
-            issue_number: issue_number,
             body: "Custom Diff",
             commit_id: context.sha,
             path: 'my_testfile.txt',

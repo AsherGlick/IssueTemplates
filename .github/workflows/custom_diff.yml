@@ -63,13 +63,30 @@ jobs:
           const diff = response.data.map(file => file.patch).join("\n\n");
           console.log(diff);
 
-          //console.log(files);
+          let comment_body = `<details>
+          <summary>Full Diff</summary>
+            \`\`\`diff
+             null
+            +something
+            -somethingelse
+             another null
+            \`\`\`
+          </details>
+          <details>
+          <summary>Incremental Diff</summary>
+            \`\`\`diff
+             null
+            +something
+            -somethingelse
+             another null
+            \`\`\`
+          </details>`
           
           await github.rest.pulls.createReviewComment({
             owner: context.repo.owner,
             repo: context.repo.repo,
             pull_number: issue_number,
-            body: "Custom Diff",
+            body: comment_body,
             commit_id: '${{ steps.prcommithash.outputs.pr_commit_hash }}',
             path: 'my_testfile.txt',
             // start_line: 1,

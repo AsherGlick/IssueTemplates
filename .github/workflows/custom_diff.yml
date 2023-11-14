@@ -50,7 +50,7 @@ jobs:
             repo: context.repo.repo,
             pull_number: issue_number,
             body: "Custom Diff",
-            commit_id: $PR_COMMIT_HASH,
+            commit_id: '${{env.PR_COMMIT_HASH}}',
             path: 'my_testfile.txt',
             // start_line: 1,
             // start_side: "RIGHT",

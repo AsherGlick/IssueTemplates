@@ -36,6 +36,7 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             pull_number: issue_number,
+            issue_number: issue_number,
             body: "Custom Diff",
             commit_id: context.sha,
             path: 'myfile.txt',

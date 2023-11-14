@@ -46,13 +46,13 @@ jobs:
           console.log("Owner:"+context.repo.owner);
 
           // "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files")
-          let files = await github.rest.pulls.files({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            pull_number: issue_number,
-          })
+          //let files = await github.rest.pulls.files({
+          //  owner: context.repo.owner,
+          //  repo: context.repo.repo,
+          //  pull_number: issue_number,
+          //})
 
-          console.log(files);
+          //console.log(files);
           
           await github.rest.pulls.createReviewComment({
             owner: context.repo.owner,
@@ -63,6 +63,6 @@ jobs:
             path: 'my_testfile.txt',
             // start_line: 1,
             // start_side: "RIGHT",
-            line: 1,
+            line: 36,
             side: "RIGHT",
           });

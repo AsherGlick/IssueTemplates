@@ -63,24 +63,28 @@ jobs:
           const diff = response.data.map(file => file.patch).join("\n\n");
           console.log(diff);
 
-          let comment_body = `<details>
-          <summary>Full Diff</summary>
-            \`\`\`diff
-             null
-            +something
-            -somethingelse
-             another null
-            \`\`\`
-          </details>
-          <details>
-          <summary>Incremental Diff</summary>
-            \`\`\`diff
-             null
-            +something
-            -somethingelse
-             another null
-            \`\`\`
-          </details>`
+          let comment_body = [
+            "<details>",
+            "<summary>Full Diff</summary>",
+            "",
+            "```diff",
+            " null",
+            "+something",
+            "-somethingelse",
+            " another null",
+            "```",
+            "</details>",
+            "<details>",
+            "<summary>Incremental Diff</summary>",
+            "",
+            "```diff",
+            " null",
+            "+something",
+            "-somethingelse",
+            " another null",
+            "```",
+            "</details>",
+          ].join("\n");
           
           await github.rest.pulls.createReviewComment({
             owner: context.repo.owner,

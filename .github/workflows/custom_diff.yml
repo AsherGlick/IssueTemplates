@@ -18,7 +18,7 @@ jobs:
         done
     - name: Post Comment
       if: always()
-      uses: action/github-script@v5
+      uses: actions/github-script@v5
       with:
         script: |
           const fs = require('fs');

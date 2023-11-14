@@ -18,9 +18,18 @@ jobs:
            echo $file >> file_list.txt
         done
 
+    - name: Fetch PR commits
+      run: |
+        git fetch origin +refs/pull/${{ github.event.pull_request.number }}/head:refs/pull/${{ github.event.pull_request.number }}/head
+
+    - name: Get PR commit hash
+      run: |
+          PR_COMMIT_HASH=$(git log --format="%H" -n 1 refs/pull/${{ github.event.pull_request.number }}/head)
+          echo "Latest PR Commit Hash: $PR_COMMIT_HASH"
+
     - name: Post Comment
       if: always()
-      uses: actions/github-script@7
+      uses: actions/github-script@5
       with:
         script: |
           const fs = require('fs');

@@ -6,7 +6,7 @@ on:
       - '**/*.txt'
 jobs:
   custom-diff:
-    runs-on: ubuntu-23.04
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout Code
       uses: actions/checkout@v2

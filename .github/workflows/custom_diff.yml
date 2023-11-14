@@ -37,25 +37,66 @@ jobs:
           const fs = require('fs');
           const path = require('path');
 
-
           const issue_number = context.issue.number;
           const githubToken = process.env.GITHUB_TOKEN;
-          //const octokit = github.getOctokit(githubToken);
 
           console.log("Sha:" + context.sha);
           console.log("Issue Number:" + issue_number);
           console.log("Repo:" +context.repo.repo);
           console.log("Owner:"+context.repo.owner);
 
+          // "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files")
+          //let files = await github.rest.pulls.files({
+          //  owner: context.repo.owner,
+          //  repo: context.repo.repo,
+          //  pull_number: issue_number,
+          //})
+
+          const response = await github.rest.pulls.listFiles({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: issue_number,
+          })
+
+          console.log(response);
+
+          const diff = response.data.map(file => file.patch).join("\n\n");
+          console.log(diff);
+
+          let comment_body = [
+            "<details>",
+            "<summary>Full Diff</summary>",
+            "",
+            "```diff",
+            " null",
+            "+something",
+            "-somethingelse",
+            " another null",
+            "```",
+            "</details>",
+            "<details>",
+            "<summary>Incremental Diff</summary>",
+            "",
+            "```diff",
+            " null",
+            "+something",
+            "-somethingelse",
+            " another null",
+            "```",
+            "</details>",
+          ].join("\n");
+          
           await github.rest.pulls.createReviewComment({
             owner: context.repo.owner,
             repo: context.repo.repo,
             pull_number: issue_number,
-            body: "Custom Diff",
+            path: "my_testfile.txt",
+            body: comment_body,
             commit_id: '${{ steps.prcommithash.outputs.pr_commit_hash }}',
-            path: 'my_testfile.txt',
+            subject_type: "file",
+            //path: 'my_testfile.txt',
             // start_line: 1,
             // start_side: "RIGHT",
-            line: 1,
-            side: "RIGHT",
+            //line: 36,
+            //side: "RIGHT",
           });

@@ -52,11 +52,13 @@ jobs:
           //  pull_number: issue_number,
           //})
 
-          const response = await github.pulls.listFiles({
+          const response = await github.rest.pulls.listFiles({
             owner: context.repo.owner,
             repo: context.repo.repo,
             pull_number: issue_number,
           })
+
+          console.log(response);
 
           const diff = response.data.map(file => file.patch).join("\n\n");
           console.log(diff);

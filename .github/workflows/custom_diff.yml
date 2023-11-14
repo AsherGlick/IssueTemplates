@@ -40,6 +40,6 @@ jobs:
             issue_number: issue_number,
             body: "Custom Diff",
             commit_id: context.sha,
-            path: 'myfile.txt',
+            path: 'my_testfile.txt',
             position: 1,
           });

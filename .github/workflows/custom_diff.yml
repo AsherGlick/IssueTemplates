@@ -56,6 +56,9 @@ jobs:
           const files = fs.readFileSync('file_list.txt', 'utf8').split("\n");
 
           for (let file of files) {
+            if (file == "") {
+              continue;
+            }
             const diff_contents = fs.readFileSync(file + "._diff", 'utf8')
             let comment_body = [
               "<details>",

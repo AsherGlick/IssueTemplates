@@ -3,7 +3,7 @@ name: Custom Diff
 on:
   pull_request:
     paths:
-      - '**/*.txt'
+      - '**/*.bin'
 jobs:
   custom-diff:
     runs-on: ubuntu-latest
@@ -12,15 +12,28 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v2
 
-    - name: Get Filenames
-      run: |
-        for file in $(git diff --name-only ${{ github.base_ref }}...${{ github.head_ref }} | grep '.proto$'); do
-           echo $file >> file_list.txt
-        done
+    - name: Install ProtoC
+      run: sudo apt-get install -y protobuf-compiler
 
     - name: Fetch PR commits
       run: |
         git fetch origin +refs/pull/${{ github.event.pull_request.number }}/head:refs/pull/${{ github.event.pull_request.number }}/head
+        git fetch origin ${{ github.base_ref }}
+        git fetch origin ${{ github.head_ref }}
+
+    - name: Get Filenames
+      run: |
+        for file in $(git diff --name-only origin/${{ github.base_ref }}...origin/${{ github.head_ref }} | grep '.bin$'); do
+          if [ -n "$(git ls-tree "origin/${{ github.base_ref }}" -- "$file")" ]; then
+            git show origin/${{ github.base_ref }}:$file > $file._old
+            protoc --decode=Base simpleschema.proto < $file._old > $file._old._textproto
+          else
+            touch $file._old._textproto
+          fi
+          protoc --decode=Base simpleschema.proto < $file > $file._textproto
+          diff -u $file._old._textproto $file._textproto > $file._diff || true
+          echo $file >> file_list.txt
+        done
 
     - name: Get PR commit hash
       id: prcommithash
@@ -40,63 +53,31 @@ jobs:
           const issue_number = context.issue.number;
           const githubToken = process.env.GITHUB_TOKEN;
 
-          console.log("Sha:" + context.sha);
-          console.log("Issue Number:" + issue_number);
-          console.log("Repo:" +context.repo.repo);
-          console.log("Owner:"+context.repo.owner);
+          const files = fs.readFileSync('file_list.txt', 'utf8').split("\n");
 
-          // "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files")
-          //let files = await github.rest.pulls.files({
-          //  owner: context.repo.owner,
-          //  repo: context.repo.repo,
-          //  pull_number: issue_number,
-          //})
+          for (let file of files) {
+            if (file == "") {
+              continue;
+            }
+            const diff_contents = fs.readFileSync(file + "._diff", 'utf8')
+            let comment_body = [
+              "<details>",
+              "<summary>Full Diff</summary>",
+              "",
+              "```diff",
+              diff_contents,
+              "```",
+              "</details>",
+            ].join("\n");
+            
 
-          const response = await github.rest.pulls.listFiles({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            pull_number: issue_number,
-          })
-
-          console.log(response);
-
-          const diff = response.data.map(file => file.patch).join("\n\n");
-          console.log(diff);
-
-          let comment_body = [
-            "<details>",
-            "<summary>Full Diff</summary>",
-            "",
-            "```diff",
-            " null",
-            "+something",
-            "-somethingelse",
-            " another null",
-            "```",
-            "</details>",
-            "<details>",
-            "<summary>Incremental Diff</summary>",
-            "",
-            "```diff",
-            " null",
-            "+something",
-            "-somethingelse",
-            " another null",
-            "```",
-            "</details>",
-          ].join("\n");
-          
-          await github.rest.pulls.createReviewComment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            pull_number: issue_number,
-            path: "my_testfile.txt",
-            body: comment_body,
-            commit_id: '${{ steps.prcommithash.outputs.pr_commit_hash }}',
-            subject_type: "file",
-            //path: 'my_testfile.txt',
-            // start_line: 1,
-            // start_side: "RIGHT",
-            //line: 36,
-            //side: "RIGHT",
-          });
+            await github.rest.pulls.createReviewComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: issue_number,
+              path: file,
+              body: comment_body,
+              commit_id: '${{ steps.prcommithash.outputs.pr_commit_hash }}',
+              subject_type: "file",
+            });
+          }

@@ -56,8 +56,7 @@ jobs:
           const files = fs.readFileSync('file_list.txt', 'utf8').split("\n");
 
           for (let file of files) {
-            console.log(file);
-            const diff_contents = fs.readFileSync(file, 'utf8')
+            const diff_contents = fs.readFileSync(file + "._diff", 'utf8')
             let comment_body = [
               "<details>",
               "<summary>Full Diff</summary>",
@@ -74,7 +73,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: issue_number,
-              path: "my_testfile.txt",
+              path: file,
               body: comment_body,
               commit_id: '${{ steps.prcommithash.outputs.pr_commit_hash }}',
               subject_type: "file",

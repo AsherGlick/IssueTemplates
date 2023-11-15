@@ -1,0 +1,3 @@
+message Base {
+	repeated int32 a_number = 1;
+}

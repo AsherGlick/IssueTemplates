@@ -17,13 +17,13 @@ jobs:
 
     - name: Fetch PR commits
       run: |
-        git fetch origin +refs/pull/${{ github.event.pull_request.number }}/head
+        git fetch origin +refs/pull/${{ github.event.pull_request.number }}/head:refs/pull/${{ github.event.pull_request.number }}/head
         git fetch origin ${{ github.base_ref }}
-        #git switch pull_request_headref
+        git fetch origin ${{ github.head_ref }}
 
     - name: Get Filenames
       run: |
-        for file in $(git diff --name-only origin/${{ github.base_ref }}..origin/pull/${{ github.event.pull_request.number }}/head | grep '.bin$'); do
+        for file in $(git diff --name-only origin/${{ github.base_ref }}...origin/${{ github.head_ref }} | grep '.bin$'); do
           if [ -n "$(git ls-tree "origin/pull/${{ github.event.pull_request.number }}/head" -- "$file")" ]; then
             git show origin/${{ github.base_ref }}:$file > $file._old
             protoc --decode=Base simpleschema.proto < $file._old > $file._old._textproto

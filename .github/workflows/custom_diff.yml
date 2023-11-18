@@ -17,9 +17,9 @@ jobs:
 
     - name: Fetch PR commits
       run: |
-        git fetch origin +refs/pull/${{ github.event.pull_request.number }}/head:pull_request_headref
-        #git fetch origin ${{ github.base_ref }}
-        git switch pull_request_headref
+        git fetch origin +refs/pull/${{ github.event.pull_request.number }}/head
+        git fetch origin ${{ github.base_ref }}
+        #git switch pull_request_headref
 
     - name: Get Filenames
       run: |

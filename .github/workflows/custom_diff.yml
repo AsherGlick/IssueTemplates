@@ -23,7 +23,7 @@ jobs:
 
     - name: Get Filenames
       run: |
-        for file in $(git diff --name-only origin/${{ github.base_ref }}...pull_request_headref | grep '.bin$'); do
+        for file in $(git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }} | grep '.bin$'); do
           if [ -n "$(git ls-tree "origin/${{ github.base_ref }}" -- "$file")" ]; then
             git show origin/${{ github.base_ref }}:$file > $file._old
             protoc --decode=Base simpleschema.proto < $file._old > $file._old._textproto

@@ -32,6 +32,7 @@ jobs:
           protoc --decode=Base simpleschema.proto < $file > $file._textproto
           diff -u $file._old._textproto $file._textproto > $file._diff || true
           echo $file >> file_list.txt
+          echo "Hello World"
         done
 
     - name: Get PR commit hash

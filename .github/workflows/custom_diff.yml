@@ -39,6 +39,7 @@ jobs:
 
           diff -u $file.textproto._old $file.textproto._new > $file._diff || true
           echo $file >> file_list.txt
+          echo "Hello World"
         done
 
     - name: Get PR commit hash

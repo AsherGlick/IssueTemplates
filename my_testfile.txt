@@ -1,6 +1,6 @@
 This is a test file
 The goal is to trigger some CI stuff to see if we get get a comment on our PR
-Lets see how it goes.
+ Lets see how it goes.
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
 tempor incididunt ut labore et dolore magna aliqua. Elementum curabitur
